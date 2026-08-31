@@ -1,15 +1,22 @@
-import type { CardData } from '../../../types/types.ts';
+import type { CardData, HandleCardClick } from '../../../types/types.ts';
 
 type CardProps = {
   card: CardData;
+  handleCardClick: HandleCardClick;
 };
 
 export default function Card(props: CardProps): React.JSX.Element {
   const { name, link } = props.card;
+  const { handleCardClick } = props;
 
   return (
     <li className='card'>
-      <img className='card__image' src={link} alt={name} />
+      <img
+        className='card__image'
+        src={link}
+        alt={name}
+        onClick={() => handleCardClick(name, link)}
+      />
       <button
         aria-label='Delete card'
         className='card__delete-button'

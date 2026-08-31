@@ -6,6 +6,7 @@ import EditProfile from './Popup/EditProfile/EditProfile.tsx';
 import EditAvatar from './Popup/EditAvatar/EditAvatar.tsx';
 import Card from './Card/Card.tsx';
 import avatar from '../../images/avatar.jpg';
+import ImagePopup from './Popup/ImagePopup/ImagePopup.tsx';
 
 const cards: CardData[] = [
   {
@@ -52,6 +53,13 @@ export default function Main(): React.JSX.Element {
     setPopup(null);
   }
 
+  function handleCardClick(name: string, link: string): void {
+    const imagePopup: PopupConfig = {
+      children: <ImagePopup name={name} link={link} />,
+    };
+    handleOpenPopup(imagePopup);
+  }
+
   return (
     <main className='content'>
       <section className='profile page__section'>
@@ -82,7 +90,11 @@ export default function Main(): React.JSX.Element {
       <section className='cards page__section'>
         <ul className='cards__list'>
           {cards.map((card) => (
-            <Card key={card._id} card={card} />
+            <Card
+              key={card._id}
+              card={card}
+              handleCardClick={handleCardClick}
+            />
           ))}
         </ul>
       </section>
