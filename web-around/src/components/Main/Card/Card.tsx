@@ -1,4 +1,4 @@
-import type { CardData, PopupConfig } from '../../../types/types.ts';
+import type { CardData } from '../../../types/types.ts';
 
 type CardProps = {
   card: CardData;

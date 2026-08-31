@@ -5,6 +5,7 @@ import Popup from './Popup/Popup.tsx';
 import EditProfile from './Popup/EditProfile/EditProfile.tsx';
 import EditAvatar from './Popup/EditAvatar/EditAvatar.tsx';
 import Card from './Card/Card.tsx';
+import avatar from '../../images/avatar.jpg';
 
 const cards: CardData[] = [
   {
@@ -58,11 +59,7 @@ export default function Main(): React.JSX.Element {
           className='profile__avatar-wrapper'
           onClick={() => handleOpenPopup(editAvatarPopup)}
         >
-          <img
-            className='profile__image'
-            src='./images/avatar.jpg'
-            alt='Avatar'
-          />
+          <img className='profile__image' src={avatar} alt='Avatar' />
           <div className='profile__avatar-overlay'></div>
         </div>
         <div className='profile__info'>
@@ -89,24 +86,6 @@ export default function Main(): React.JSX.Element {
           ))}
         </ul>
       </section>
-      <template id='card-template'>
-        <li className='card'>
-          <img className='card__image' src='#' alt='' />
-          <button
-            aria-label='Eliminar tarjeta'
-            className='card__delete-button'
-            type='button'
-          ></button>
-          <div className='card__description'>
-            <h2 className='card__title'></h2>
-            <button
-              aria-label='Botón Me gusta'
-              className='card__like-button'
-              type='button'
-            ></button>
-          </div>
-        </li>
-      </template>
       {popup && (
         <Popup
           onClose={handleClosePopup}
