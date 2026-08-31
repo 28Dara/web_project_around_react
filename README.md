@@ -43,3 +43,61 @@ El proyecto sigue el paradigma de **componentes funcionales de React**, cada uno
 La comunicación entre componentes se realiza mediante **props**, incluyendo funciones callback (`handleCardClick`, `handleOpenPopup`, `handleClosePopup`, `onClose`), manteniendo cada componente desacoplado de la lógica de sus padres — el mismo principio de acoplamiento débil aplicado en el proyecto de POO, ahora expresado con el modelo de props/estado de React.
 
 ### Estructura de carpetas
+
+web-around/
+├── public/
+│ └── favicon.svg
+├── src/
+│ ├── components/
+│ │ ├── App.tsx
+│ │ ├── Header/
+│ │ │ └── Header.tsx
+│ │ ├── Footer/
+│ │ │ └── Footer.tsx
+│ │ └── Main/
+│ │ ├── Main.tsx
+│ │ ├── Card/
+│ │ │ └── Card.tsx
+│ │ └── Popup/
+│ │ ├── Popup.tsx
+│ │ ├── EditProfile/
+│ │ │ └── EditProfile.tsx
+│ │ ├── EditAvatar/
+│ │ │ └── EditAvatar.tsx
+│ │ ├── NewCard/
+│ │ │ └── NewCard.tsx
+│ │ └── ImagePopup/
+│ │ └── ImagePopup.tsx
+│ ├── blocks/ # estilos BEM heredados del proyecto POO
+│ ├── images/
+│ ├── vendor/ # normalize.css y fonts.css
+│ ├── types/
+│ │ └── types.ts # CardData, PopupConfig, HandleCardClick
+│ ├── index.css
+│ └── main.tsx
+├── index.html
+├── vite.config.ts
+└── package.json
+
+## Lo aprendido
+
+- Transformación de HTML a JSX y adaptación de sintaxis (`className`, atributos en camelCase, cierre de etiquetas)
+- Componentización: dividir una interfaz monolítica en componentes funcionales reutilizables
+- Manejo de estado con el hook `useState` para controlar la visibilidad de elementos, reemplazando la manipulación directa del DOM
+- Renderizado condicional (`{popup && (...)}`, operador ternario) para mostrar u ocultar elementos según el estado
+- Renderizado de listas con `.map()` y la importancia de la prop `key`
+- Paso de datos y funciones entre componentes mediante props, incluyendo tipado explícito con `type` en TypeScript
+- Reutilización de tipos entre proyectos (`CardData` heredado del proyecto POO)
+- Diferencias de configuración entre un proyecto compilado manualmente con `tsc` y uno gestionado por Vite (HMR, `tsconfig.app.json`, alias de rutas)
+
+## Estado del proyecto
+
+- Migración de marcado y estilos a React completada
+- Árbol de componentes construido según el brief
+- Sistema de ventanas emergentes funcional mediante estado de React
+- Tarjetas renderizadas con datos ficticios (`CardData[]`)
+- Pendiente para el próximo sprint: conexión de formularios, validación, y funcionalidad de "me gusta"/eliminar tarjeta
+
+## Autor
+
+Dara Rangel
