@@ -1,12 +1,12 @@
 type PopupProps = {
-  title: string;
+  title?: string;
   children: React.ReactNode;
+  onClose: () => void;
   isOpen: boolean;
 };
 
 export default function Popup(props: PopupProps): React.JSX.Element {
-  //los hijos son el contenido de la ventana emergente
-  const { title, children, isOpen } = props;
+  const { title, children, onClose, isOpen } = props;
 
   return (
     <div className={`popup ${isOpen ? 'popup_is-opened' : ''}`}>
@@ -15,6 +15,7 @@ export default function Popup(props: PopupProps): React.JSX.Element {
           aria-label='Close popup'
           className='popup__close'
           type='button'
+          onClick={onClose}
         />
         <h3 className='popup__title'>{title}</h3>
         {children}

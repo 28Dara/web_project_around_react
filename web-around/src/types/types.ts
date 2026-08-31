@@ -15,6 +15,11 @@ export interface CardData {
   isLiked: boolean;
 }
 
+export type PopupConfig = {
+  title?: string;
+  children: React.ReactNode;
+};
+
 export type HandleCardClick = (name: string, link: string) => void;
 
 export type RendererFunction<T> = (item: T) => void;
