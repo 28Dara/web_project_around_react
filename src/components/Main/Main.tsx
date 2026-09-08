@@ -1,22 +1,55 @@
 import { useContext } from 'react';
 import Popup from './Popup/Popup.tsx';
 import Card from './Card/Card.tsx';
-import avatar from '../../images/avatar.jpg';
+import EditProfile from './Popup/EditProfile/EditProfile.tsx';
+import EditAvatar from './Popup/EditAvatar/EditAvatar.tsx';
+import NewCard from './Popup/NewCard/NewCard.tsx';
+import ImagePopup from './Popup/ImagePopup/ImagePopup.tsx';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
+import type { CardData, PopupConfig } from '../../types/types.ts';
+
+type MainProps = {
+  cards: CardData[];
+  popup: PopupConfig | null;
+  handleOpenPopup: (popup: PopupConfig) => void;
+  handleClosePopup: () => void;
+};
 
 export default function Main(props: MainProps): React.JSX.Element {
+  const { cards, popup, handleOpenPopup, handleClosePopup } = props;
   const { currentUser } = useContext(CurrentUserContext);
+
+  function handleEditProfileClick() {
+    handleOpenPopup({ title: 'Editar perfil', children: <EditProfile /> });
+  }
+
+  function handleEditAvatarClick() {
+    handleOpenPopup({
+      title: 'Cambiar foto de perfil',
+      children: <EditAvatar />,
+    });
+  }
+
+  function handleAddCardClick() {
+    handleOpenPopup({ title: 'Nuevo lugar', children: <NewCard /> });
+  }
+
+  function handleCardClick(name: string, link: string) {
+    handleOpenPopup({ children: <ImagePopup name={name} link={link} /> });
+  }
 
   return (
     <main className='content'>
       <section className='profile page__section'>
-        <div className='profile__avatar'>
+        <div
+          className='profile__avatar-wrapper'
+          onClick={handleEditAvatarClick}
+        >
           <img
-            className='profile__avatar-img'
+            className='profile__image'
             src={currentUser?.avatar}
             alt={currentUser?.name}
           />
-          <img className='profile__image' src={avatar} alt='Avatar' />
           <div className='profile__avatar-overlay'></div>
         </div>
         <div className='profile__info'>
@@ -25,7 +58,7 @@ export default function Main(props: MainProps): React.JSX.Element {
             aria-label='Editar perfil'
             className='profile__edit-button'
             type='button'
-            onClick={() => handleOpenPopup(editProfilePopup)}
+            onClick={handleEditProfileClick}
           ></button>
           <p className='profile__description'>{currentUser?.about}</p>
         </div>
@@ -33,7 +66,7 @@ export default function Main(props: MainProps): React.JSX.Element {
           aria-label='Agregar tarjeta'
           className='profile__add-button'
           type='button'
-          onClick={() => handleOpenPopup(newCardPopup)}
+          onClick={handleAddCardClick}
         />
       </section>
       <section className='cards page__section'>

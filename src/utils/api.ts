@@ -7,7 +7,15 @@ import type {
   AvatarFormData,
 } from '../types/types.js';
 
-export default class Api {
+const apiConfig: ApiConfig = {
+  baseUrl: 'https://around-api.es.tripleten-services.com/v1',
+  headers: {
+    authorization: 'c0ddf0cf-88d1-48e6-85fb-4d797dfcd802',
+    'Content-Type': 'application/json',
+  },
+};
+
+class Api {
   private baseUrl: string;
   private headers: ApiConfig['headers'];
 
@@ -67,12 +75,15 @@ export default class Api {
     }
   }
 
-  async changeLikeCardStatus(
-    cardId: string,
-    isCurrentlyLiked: boolean
-  ): Promise<CardData> {
+  async addLike(cardId: string): Promise<CardData> {
     return this.sendRequest<CardData>(`/cards/${cardId}/likes`, {
-      method: isCurrentlyLiked ? 'DELETE' : 'PUT',
+      method: 'PUT',
+    });
+  }
+
+  async removeLike(cardId: string): Promise<CardData> {
+    return this.sendRequest<CardData>(`/cards/${cardId}/likes`, {
+      method: 'DELETE',
     });
   }
 
@@ -83,3 +94,7 @@ export default class Api {
     });
   }
 }
+
+const api = new Api(apiConfig);
+
+export default api;
