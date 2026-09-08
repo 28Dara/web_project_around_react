@@ -1,15 +1,22 @@
+import { useContext } from 'react';
 import type { CardData, HandleCardClick } from '../../../types/types.ts';
+import CurrentUserContext from '../../../contexts/CurrentUserContext';
 
 type CardProps = {
   card: CardData;
   handleCardClick: HandleCardClick;
+  handleCardLike: (card: CardData) => void;
+  handleCardDelete: (card: CardData) => void;
 };
 
 export default function Card(props: CardProps): React.JSX.Element {
-  const { name, link } = props.card;
-  const { handleCardClick } = props;
+  const { card, handleCardClick, handleCardLike, handleCardDelete } = props;
+  const { name, link, isLiked, owner } = card;
+  const { currentUser } = useContext(CurrentUserContext);
+  const isOwner = currentUser?._id === owner;
+
   const cardLikeButtonClassName = `card__like-button ${
-    card.isLiked ? 'card__like-button_is-active' : ''
+    isLiked ? 'card__like-button_is-active' : ''
   }`;
 
   return (
@@ -20,18 +27,21 @@ export default function Card(props: CardProps): React.JSX.Element {
         alt={name}
         onClick={() => handleCardClick(name, link)}
       />
-      <button
-        aria-label='Like card'
-        type='button'
-        className={cardLikeButtonClassName}
-        onClick={() => handleCardLike(card)}
-      />
+      {isOwner && (
+        <button
+          aria-label='Eliminar tarjeta'
+          className='card__delete-button'
+          type='button'
+          onClick={() => handleCardDelete(card)}
+        />
+      )}
       <div className='card__description'>
         <h2 className='card__title'>{name}</h2>
         <button
-          aria-label='Like card'
+          aria-label='Botón Me gusta'
           type='button'
-          className='card__like-button'
+          className={cardLikeButtonClassName}
+          onClick={() => handleCardLike(card)}
         />
       </div>
     </li>
