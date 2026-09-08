@@ -8,6 +8,9 @@ type CardProps = {
 export default function Card(props: CardProps): React.JSX.Element {
   const { name, link } = props.card;
   const { handleCardClick } = props;
+  const cardLikeButtonClassName = `card__like-button ${
+    card.isLiked ? 'card__like-button_is-active' : ''
+  }`;
 
   return (
     <li className='card'>
@@ -18,9 +21,10 @@ export default function Card(props: CardProps): React.JSX.Element {
         onClick={() => handleCardClick(name, link)}
       />
       <button
-        aria-label='Delete card'
-        className='card__delete-button'
+        aria-label='Like card'
         type='button'
+        className={cardLikeButtonClassName}
+        onClick={() => handleCardLike(card)}
       />
       <div className='card__description'>
         <h2 className='card__title'>{name}</h2>
