@@ -5,6 +5,7 @@ import EditProfile from './Popup/EditProfile/EditProfile.tsx';
 import EditAvatar from './Popup/EditAvatar/EditAvatar.tsx';
 import NewCard from './Popup/NewCard/NewCard.tsx';
 import ImagePopup from './Popup/ImagePopup/ImagePopup.tsx';
+import RemoveCard from './Popup/RemoveCard/RemoveCard.tsx';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 import type { CardData } from '../../interfaces/CardData';
 import type { ModalData } from '../../interfaces/ModalData';
@@ -48,6 +49,13 @@ export default function Main(props: MainProps): React.JSX.Element {
     handleOpenPopup({ children: <ImagePopup name={name} link={link} /> });
   }
 
+  function handleCardDeleteClick(card: CardData) {
+    handleOpenPopup({
+      title: '¿Estás seguro?',
+      children: <RemoveCard card={card} handleCardDelete={handleCardDelete} />,
+    });
+  }
+
   return (
     <main className='content'>
       <section className='profile page__section'>
@@ -87,7 +95,7 @@ export default function Main(props: MainProps): React.JSX.Element {
               card={card}
               handleCardClick={handleCardClick}
               handleCardLike={handleCardLike}
-              handleCardDelete={handleCardDelete}
+              handleCardDelete={handleCardDeleteClick}
             />
           ))}
         </ul>

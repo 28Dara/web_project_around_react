@@ -1,78 +1,83 @@
-# Around The U.S. — React
+# Around The U.S. — React + API REST
 
 ## Descripción
 
-Este proyecto es la migración a **React** de la aplicación "Around The U.S.", desarrollada como parte del bloque de React del programa de desarrollo web de TripleTen.
+Aplicación web interactiva para explorar y compartir fotografías de lugares, construida con **React 19** y **TypeScript**. Es la migración del proyecto original (JavaScript/TypeScript con Programación Orientada a Objetos) al paradigma declarativo y basado en componentes de React, desarrollada como parte del programa de desarrollo web de TripleTen.
 
-La aplicación previa (JavaScript + TypeScript con POO y consumo de API REST) se está transformando progresivamente al paradigma declarativo y basado en componentes de React. En esta primera etapa de la migración se transfirió el marcado HTML a JSX, se conectaron los estilos existentes, se construyó el árbol de componentes y se implementó el sistema de ventanas emergentes (popups) usando estado de React (`useState`) en lugar de manipulación directa del DOM.
+La aplicación consume una API REST para persistir todos los datos: perfil de usuario, avatar y tarjetas de lugares, con "me gusta" y eliminación sincronizados en tiempo real, sin recargar la página.
 
-## Tecnologías utilizadas
+## Tecnologías
 
 - React 19 + TypeScript
-- Vite como bundler y servidor de desarrollo
-- CSS3 con metodología BEM (estilos heredados del proyecto POO)
-- ESLint (`typescript-eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`)
-- Git y GitHub
+- Vite (bundler y servidor de desarrollo)
+- Context API de React para estado global
+- CSS3 con metodología BEM
+- ESLint (`typescript-eslint`, `eslint-plugin-react-hooks`)
+- API REST (`fetch`, `async/await`)
 
-## Funcionalidades implementadas
+## Funcionalidades
 
-- Renderizado del layout completo (`Header`, `Main`, `Footer`) a partir de componentes funcionales
-- Renderizado dinámico de tarjetas (`Card`) a partir de un arreglo de datos ficticios tipado (`CardData[]`), mediante `.map()`
-- Sistema de ventanas emergentes (`Popup`) controlado por estado (`useState`), sin uso de `document.querySelector` ni clases CSS manipuladas manualmente
-- Ventana emergente de edición de perfil (`EditProfile`)
-- Ventana emergente de cambio de avatar (`EditAvatar`)
-- Ventana emergente de creación de tarjeta (`NewCard`)
-- Ventana emergente de imagen ampliada (`ImagePopup`), sin título, mostrando la imagen y el nombre de la tarjeta seleccionada
-- Cierre de ventanas emergentes mediante el botón de cierre (×)
+- Carga inicial del usuario y las tarjetas desde el servidor (`Promise.all`)
+- Estado global del usuario actual vía **Context API**, disponible en toda la aplicación sin prop drilling
+- Edición de perfil (nombre y descripción) mediante **componente controlado** (`useState`)
+- Cambio de avatar mediante **componente no controlado** (`useRef`)
+- Creación de nuevas tarjetas mediante formulario controlado; la tarjeta nueva aparece primero en la lista
+- Sistema de "me gusta" sincronizado con el servidor, con estado visual real (`isLiked`)
+- Eliminación de tarjetas con **ventana de confirmación previa**; el botón de eliminar solo aparece en tarjetas del usuario propietario
+- Vista ampliada de imagen en ventana emergente
+- Sistema de ventanas emergentes (popups) unificado, controlado por estado en `App.tsx`
+- Manejo de errores de red con `try...catch` en todas las llamadas a la API
 
-> Los formularios (editar perfil, nuevo lugar, cambiar avatar) y las acciones de "me gusta"/eliminar tarjeta se muestran en pantalla pero **aún no están conectados a lógica de envío o al servidor** — esto se implementará en el siguiente sprint.
+## Arquitectura
 
-## Arquitectura del proyecto
+El estado y la lógica de negocio viven en `App.tsx`, que actúa como "cerebro" de la aplicación: carga los datos iniciales, mantiene el usuario actual, las tarjetas y el popup activo, y expone las funciones de actualización a través de `CurrentUserContext`.
 
-El proyecto sigue el paradigma de **componentes funcionales de React**, cada uno con responsabilidad única:
+| Componente          | Responsabilidad                                                 |
+| ------------------- | --------------------------------------------------------------- |
+| `App`               | Estado global, llamadas a la API, provee el contexto            |
+| `Header` / `Footer` | Presentación estática                                           |
+| `Main`              | Perfil, lista de tarjetas, orquesta qué popup abrir             |
+| `Card`              | Renderiza una tarjeta; determina si el usuario es dueño         |
+| `Popup`             | Wrapper genérico de ventana emergente (título opcional, cierre) |
+| `EditProfile`       | Formulario controlado de perfil                                 |
+| `EditAvatar`        | Formulario no controlado (`useRef`) de avatar                   |
+| `NewCard`           | Formulario controlado de nueva tarjeta                          |
+| `RemoveCard`        | Confirmación antes de eliminar                                  |
+| `ImagePopup`        | Vista ampliada de imagen                                        |
 
-- **`App`** — componente raíz; ensambla `Header`, `Main` y `Footer`.
-- **`Header`** — muestra el logotipo de la aplicación.
-- **`Footer`** — muestra el pie de página con el copyright.
-- **`Main`** — componente central; contiene el perfil de usuario, la lista de tarjetas y gestiona el estado `popup` que controla qué ventana emergente se muestra.
-- **`Card`** — recibe una tarjeta (`CardData`) y la función `handleCardClick` por props; renderiza una tarjeta individual y dispara la apertura de `ImagePopup` al hacer clic en la imagen.
-- **`Popup`** — componente reutilizable base para todas las ventanas emergentes; recibe `title` (opcional), `children`, `isOpen` y `onClose` por props. Si no recibe `title`, aplica el estilo de imagen ampliada.
-- **`ImagePopup`** — contenido de la ventana emergente de imagen (recibe `name` y `link`).
-- **`EditProfile`**, **`EditAvatar`**, **`NewCard`** — formularios (sin lógica de envío todavía) que se renderizan como `children` dentro de `Popup`.
-
-La comunicación entre componentes se realiza mediante **props**, incluyendo funciones callback (`handleCardClick`, `handleOpenPopup`, `handleClosePopup`, `onClose`), manteniendo cada componente desacoplado de la lógica de sus padres — el mismo principio de acoplamiento débil aplicado en el proyecto de POO, ahora expresado con el modelo de props/estado de React.
+Los componentes de formulario (`EditProfile`, `EditAvatar`, `NewCard`, `RemoveCard`) consumen `CurrentUserContext` para acceder directamente a las funciones que llaman a la API, evitando pasar callbacks manualmente por cada nivel del árbol.
 
 ### Estructura de carpetas
 
 web-around/
-├── public/
-│ └── favicon.svg
 ├── src/
 │ ├── components/
 │ │ ├── App.tsx
-│ │ ├── Header/
-│ │ │ └── Header.tsx
-│ │ ├── Footer/
-│ │ │ └── Footer.tsx
+│ │ ├── Header/Header.tsx
+│ │ ├── Footer/Footer.tsx
 │ │ └── Main/
 │ │ ├── Main.tsx
-│ │ ├── Card/
-│ │ │ └── Card.tsx
+│ │ ├── Card/Card.tsx
 │ │ └── Popup/
 │ │ ├── Popup.tsx
-│ │ ├── EditProfile/
-│ │ │ └── EditProfile.tsx
-│ │ ├── EditAvatar/
-│ │ │ └── EditAvatar.tsx
-│ │ ├── NewCard/
-│ │ │ └── NewCard.tsx
-│ │ └── ImagePopup/
-│ │ └── ImagePopup.tsx
+│ │ ├── EditProfile/EditProfile.tsx
+│ │ ├── EditAvatar/EditAvatar.tsx
+│ │ ├── NewCard/NewCard.tsx
+│ │ ├── RemoveCard/RemoveCard.tsx
+│ │ └── ImagePopup/ImagePopup.tsx
+│ ├── contexts/
+│ │ └── CurrentUserContext.tsx
+│ ├── interfaces/
+│ │ ├── UserData.ts
+│ │ ├── CardData.ts
+│ │ ├── CurrentUserContextType.ts
+│ │ ├── ModalData.ts
+│ │ └── ApiConfig.ts
+│ ├── utils/
+│ │ └── api.ts
 │ ├── blocks/ # estilos BEM heredados del proyecto POO
-│ ├── images/
 │ ├── vendor/ # normalize.css y fonts.css
-│ ├── types/
-│ │ └── types.ts # CardData, PopupConfig, HandleCardClick
+│ ├── images/
 │ ├── index.css
 │ └── main.tsx
 ├── index.html
@@ -81,22 +86,15 @@ web-around/
 
 ## Lo aprendido
 
-- Transformación de HTML a JSX y adaptación de sintaxis (`className`, atributos en camelCase, cierre de etiquetas)
-- Componentización: dividir una interfaz monolítica en componentes funcionales reutilizables
-- Manejo de estado con el hook `useState` para controlar la visibilidad de elementos, reemplazando la manipulación directa del DOM
-- Renderizado condicional (`{popup && (...)}`, operador ternario) para mostrar u ocultar elementos según el estado
-- Renderizado de listas con `.map()` y la importancia de la prop `key`
-- Paso de datos y funciones entre componentes mediante props, incluyendo tipado explícito con `type` en TypeScript
-- Reutilización de tipos entre proyectos (`CardData` heredado del proyecto POO)
-- Diferencias de configuración entre un proyecto compilado manualmente con `tsc` y uno gestionado por Vite (HMR, `tsconfig.app.json`, alias de rutas)
+- Context API para estado global sin prop drilling
+- Diferencia entre componentes controlados (`useState`) y no controlados (`useRef`), y cuándo usar cada uno
+- Actualización inmutable de arreglos de estado (`.map()`, `.filter()`, spread)
+- Reestructuración de tipos por dominio (`interfaces/UserData.ts`, `CardData.ts`) en lugar de un archivo único
+- Coordinación de formularios con llamadas asíncronas a la API y cierre automático de popups tras éxito
 
 ## Estado del proyecto
 
-- Migración de marcado y estilos a React completada
-- Árbol de componentes construido según el brief
-- Sistema de ventanas emergentes funcional mediante estado de React
-- Tarjetas renderizadas con datos ficticios (`CardData[]`)
-- Pendiente para el próximo sprint: conexión de formularios, validación, y funcionalidad de "me gusta"/eliminar tarjeta
+Integración completa con la API REST. Todas las funcionalidades del brief (conexión, contexto, likes/borrado, edición de perfil, avatar, nueva tarjeta) y de la lista de comprobación (confirmación de borrado) están implementadas y verificadas con `npx tsc -b --noEmit`.
 
 ## Autor
 

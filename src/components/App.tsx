@@ -40,7 +40,6 @@ export default function App() {
         ? api.removeLike(card._id)
         : api.addLike(card._id);
       const newCard = await apiCall;
-      // Usamos .map para reemplazar solo la tarjeta que cambió
       setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
     } catch (error) {
       console.error(error);
@@ -50,8 +49,8 @@ export default function App() {
   const handleCardDelete = async (card: CardData) => {
     try {
       await api.deleteCard(card._id);
-      // Usamos .filter para crear un nuevo arreglo sin la tarjeta borrada
       setCards((state) => state.filter((c) => c._id !== card._id));
+      setPopup(null);
     } catch (error) {
       console.error(error);
     }
@@ -80,7 +79,6 @@ export default function App() {
   const handleAddPlaceSubmit = async (data: CardFormData) => {
     try {
       const newCard = await api.addCard(data);
-      // La nueva tarjeta va primero en el arreglo
       setCards((state) => [newCard, ...state]);
       setPopup(null);
     } catch (error) {
