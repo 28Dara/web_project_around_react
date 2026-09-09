@@ -5,8 +5,12 @@ import Footer from './Footer/Footer';
 import { useEffect, useState } from 'react';
 import api from '../utils/api';
 import CurrentUserContext from '../contexts/CurrentUserContext';
-import type { UserData, UserProfileFormData } from '../interfaces/UserData';
-import type { CardData } from '../interfaces/CardData';
+import type {
+  UserData,
+  UserProfileFormData,
+  AvatarFormData,
+} from '../interfaces/UserData';
+import type { CardData, CardFormData } from '../interfaces/CardData';
 import type { ModalData } from '../interfaces/ModalData';
 
 export default function App() {
@@ -63,6 +67,27 @@ export default function App() {
     }
   };
 
+  const handleUpdateAvatar = async (data: AvatarFormData) => {
+    try {
+      const updatedUser = await api.updateAvatar(data);
+      setCurrentUser(updatedUser);
+      setPopup(null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleAddPlaceSubmit = async (data: CardFormData) => {
+    try {
+      const newCard = await api.addCard(data);
+      // La nueva tarjeta va primero en el arreglo
+      setCards((state) => [newCard, ...state]);
+      setPopup(null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   function handleOpenPopup(popup: ModalData) {
     setPopup(popup);
   }
@@ -72,7 +97,14 @@ export default function App() {
   }
 
   return (
-    <CurrentUserContext.Provider value={{ currentUser, handleUpdateUser }}>
+    <CurrentUserContext.Provider
+      value={{
+        currentUser,
+        handleUpdateUser,
+        handleUpdateAvatar,
+        handleAddPlaceSubmit,
+      }}
+    >
       <div className='page__content'>
         <Header />
         <Main
