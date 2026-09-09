@@ -6,17 +6,27 @@ import EditAvatar from './Popup/EditAvatar/EditAvatar.tsx';
 import NewCard from './Popup/NewCard/NewCard.tsx';
 import ImagePopup from './Popup/ImagePopup/ImagePopup.tsx';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
-import type { CardData, PopupConfig } from '../../types/types.ts';
+import type { CardData } from '../../interfaces/CardData';
+import type { ModalData } from '../../interfaces/ModalData';
 
 type MainProps = {
   cards: CardData[];
-  popup: PopupConfig | null;
-  handleOpenPopup: (popup: PopupConfig) => void;
+  popup: ModalData | null;
+  handleOpenPopup: (popup: ModalData) => void;
   handleClosePopup: () => void;
+  handleCardLike: (card: CardData) => void;
+  handleCardDelete: (card: CardData) => void;
 };
 
 export default function Main(props: MainProps): React.JSX.Element {
-  const { cards, popup, handleOpenPopup, handleClosePopup } = props;
+  const {
+    cards,
+    popup,
+    handleOpenPopup,
+    handleClosePopup,
+    handleCardLike,
+    handleCardDelete,
+  } = props;
   const { currentUser } = useContext(CurrentUserContext);
 
   function handleEditProfileClick() {
@@ -76,6 +86,8 @@ export default function Main(props: MainProps): React.JSX.Element {
               key={card._id}
               card={card}
               handleCardClick={handleCardClick}
+              handleCardLike={handleCardLike}
+              handleCardDelete={handleCardDelete}
             />
           ))}
         </ul>

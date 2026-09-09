@@ -1,12 +1,17 @@
 import { useContext } from 'react';
-import type { CardData, HandleCardClick } from '../../../types/types.ts';
+import type {
+  CardData,
+  HandleCardClick,
+  HandleCardLike,
+  HandleCardDelete,
+} from '../../../interfaces/CardData';
 import CurrentUserContext from '../../../contexts/CurrentUserContext';
 
 type CardProps = {
   card: CardData;
   handleCardClick: HandleCardClick;
-  handleCardLike: (card: CardData) => void;
-  handleCardDelete: (card: CardData) => void;
+  handleCardLike: HandleCardLike;
+  handleCardDelete: HandleCardDelete;
 };
 
 export default function Card(props: CardProps): React.JSX.Element {

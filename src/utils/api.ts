@@ -1,11 +1,10 @@
 import type {
-  ApiConfig,
   UserData,
-  CardData,
   UserProfileFormData,
-  CardFormData,
   AvatarFormData,
-} from '../types/types.js';
+} from '../interfaces/UserData';
+import type { CardData, CardFormData } from '../interfaces/CardData';
+import type { ApiConfig } from '../interfaces/ApiConfig';
 
 const apiConfig: ApiConfig = {
   baseUrl: 'https://around-api.es.tripleten-services.com/v1',

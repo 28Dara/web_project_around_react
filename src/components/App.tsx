@@ -5,12 +5,15 @@ import Footer from './Footer/Footer';
 import { useEffect, useState } from 'react';
 import api from '../utils/api';
 import CurrentUserContext from '../contexts/CurrentUserContext';
-import type { UserData, CardData, PopupConfig } from '../types/types.ts';
+import type { UserData } from '../interfaces/UserData';
+import type { CardData } from '../interfaces/CardData';
+import type { ModalData } from '../interfaces/ModalData';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState<UserData | null>(null);
   const [cards, setCards] = useState<CardData[]>([]);
-  const [popup, setPopup] = useState<PopupConfig | null>(null);
+  const [popup, setPopup] = useState<ModalData | null>(null);
+  // ...
 
   useEffect(() => {
     (async () => {
@@ -51,7 +54,7 @@ export default function App() {
     }
   };
 
-  function handleOpenPopup(popup: PopupConfig) {
+  function handleOpenPopup(popup: ModalData) {
     setPopup(popup);
   }
 
@@ -67,6 +70,8 @@ export default function App() {
           cards={cards}
           handleOpenPopup={handleOpenPopup}
           handleClosePopup={handleClosePopup}
+          handleCardLike={handleCardLike}
+          handleCardDelete={handleCardDelete}
           popup={popup}
         />
         <Footer />
