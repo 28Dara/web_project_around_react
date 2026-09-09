@@ -5,7 +5,7 @@ import Footer from './Footer/Footer';
 import { useEffect, useState } from 'react';
 import api from '../utils/api';
 import CurrentUserContext from '../contexts/CurrentUserContext';
-import type { UserData } from '../interfaces/UserData';
+import type { UserData, UserProfileFormData } from '../interfaces/UserData';
 import type { CardData } from '../interfaces/CardData';
 import type { ModalData } from '../interfaces/ModalData';
 
@@ -13,7 +13,6 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState<UserData | null>(null);
   const [cards, setCards] = useState<CardData[]>([]);
   const [popup, setPopup] = useState<ModalData | null>(null);
-  // ...
 
   useEffect(() => {
     (async () => {
@@ -54,6 +53,16 @@ export default function App() {
     }
   };
 
+  const handleUpdateUser = async (data: UserProfileFormData) => {
+    try {
+      const updatedUser = await api.editUserInfo(data);
+      setCurrentUser(updatedUser);
+      setPopup(null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   function handleOpenPopup(popup: ModalData) {
     setPopup(popup);
   }
@@ -63,7 +72,7 @@ export default function App() {
   }
 
   return (
-    <CurrentUserContext.Provider value={{ currentUser }}>
+    <CurrentUserContext.Provider value={{ currentUser, handleUpdateUser }}>
       <div className='page__content'>
         <Header />
         <Main
